@@ -7,4 +7,5 @@ router.post("/create-tour", TourController.createTour);
 router.get("/:id", TourController.getSingleTour);
 router.patch("/:id", TourController.updateTour);
 router.delete("/:id", TourController.deleteTour);
+router.get("/:id/next-schedule", TourController.getNextSchedule);
 export const tourRouter = router;

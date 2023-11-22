@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import { ITour } from "../interfaces/tour.interface";
+import { ITour, ITourMethods, TTourModel } from "../interfaces/tour.interface";
 
-const tourSchema = new Schema<ITour>(
+const tourSchema = new Schema<ITour, TTourModel, ITourMethods>(
   {
     name: {
       type: String,
@@ -63,4 +63,23 @@ tourSchema.virtual("durationDays").get(function () {
   return this.durationHours / 24;
 });
 
-export const TourModel = mongoose.model<ITour>("Tour", tourSchema);
+tourSchema.methods.getNextNearestDateAndEndDate = function (): {
+  nearestStartDate: Date | null;
+  estimatedEndDate: Date | null;
+} {
+  const today = new Date();
+  const futureDates = this.startDates.filter(
+    (startDate: Date) => startDate > today,
+  );
+  futureDates.sort((a: Date, b: Date) => a.getTime() - b.getTime());
+  const nearestStartDate = futureDates[0];
+  const estimatedEndDate = new Date(
+    nearestStartDate.getTime() + this.durationHours * 60 * 60 * 1000,
+  );
+  return {
+    nearestStartDate,
+    estimatedEndDate,
+  };
+};
+
+export const TourModel = mongoose.model<ITour, TTourModel>("Tour", tourSchema);

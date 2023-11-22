@@ -12,7 +12,7 @@ const getAllTours = async (): Promise<ITour[]> => {
 };
 
 const getSingleTour = async (id: string): Promise<ITour | null> => {
-  const result = TourModel.findById(id);
+  const result = await TourModel.findById(id);
   return result;
 };
 
@@ -20,7 +20,7 @@ const updateTour = async (
   id: string,
   updatedData: ITour,
 ): Promise<ITour | null> => {
-  const result = TourModel.findByIdAndUpdate(id, updatedData, {
+  const result = await TourModel.findByIdAndUpdate(id, updatedData, {
     runValidators: true,
     new: true,
   });
@@ -28,8 +28,16 @@ const updateTour = async (
 };
 
 const deleteTour = async (id: string): Promise<ITour | null> => {
-  const result = TourModel.findByIdAndDelete(id);
+  const result = await TourModel.findByIdAndDelete(id);
   return result;
+};
+const getNextSchedule = async (id: string) => {
+  const tour = await TourModel.findById(id);
+  const nextSchedule = tour?.getNextNearestDateAndEndDate();
+  return {
+    tour,
+    nextSchedule,
+  };
 };
 
 export const tourServices = {
@@ -38,4 +46,5 @@ export const tourServices = {
   getSingleTour,
   updateTour,
   deleteTour,
+  getNextSchedule,
 };
