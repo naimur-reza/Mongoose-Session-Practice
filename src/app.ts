@@ -19,4 +19,10 @@ app.get("/", (req: Request, res: Response) => {
 
 // catch all routes
 // One way for catch not found route!
-app.all("*", notFound);
+// app.all("*", notFound);
+
+// way-2 to use middleware by defining global route
+// app.use("*", notFound);
+
+// way-3 this is the best approach
+app.use(notFound);

@@ -1,7 +1,9 @@
-import { Schema } from "mongoose";
+import mongoose from "mongoose";
 
 export interface IBooking {
-  createdAt: Date;
-  user: Schema.Types.ObjectId;
-  tour: Schema.Types.ObjectId;
+  user: mongoose.Schema.Types.ObjectId;
+  tour: mongoose.Schema.Types.ObjectId;
+  bookedSlots: number;
+  price: number;
+  bookingStatus: "pending" | "paid" | "cancelled";
 }
