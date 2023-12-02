@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { userServices } from "../services/user.service";
 
 const createUser = async (req: Request, res: Response) => {
@@ -18,7 +18,7 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
 };
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await userServices.getAllUsers();
     res.status(200).json({
@@ -27,11 +27,7 @@ const getAllUsers = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: error,
-    });
+    next(error);
   }
 };
 

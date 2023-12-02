@@ -3,6 +3,7 @@ import cors from "cors";
 import { userRouter } from "./routes/user.route";
 import { tourRouter } from "./routes/tour.route";
 import { notFound } from "./controllers/notFound.controller";
+import { globalErrorHandler } from "./middleware/globalErrorHandler";
 
 export const app: Application = express();
 app.use(cors());
@@ -26,3 +27,5 @@ app.get("/", (req: Request, res: Response) => {
 
 // way-3 this is the best approach
 app.use(notFound);
+
+app.use(globalErrorHandler);
