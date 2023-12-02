@@ -1,106 +1,96 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { tourServices } from "../services/tour.service";
+import { sendSuccessResponse } from "../utils/sendSuccessResponse";
 
-const createTour = async (req: Request, res: Response) => {
+const createTour = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const tourData = req.body;
     const result = await tourServices.createTour(tourData);
-    res.status(201).json({
-      success: true,
-      message: "Tour inserted successfully!",
+    sendSuccessResponse(res, {
+      message: "Tour created successfully!",
+      statusCode: 201,
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: error,
-    });
-  }
-};
-const getAllTours = async (req: Request, res: Response) => {
-  try {
-    const result = await tourServices.getAllTours();
-    res.status(200).json({
-      success: true,
-      message: "Tours retrieved successfully!",
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: error,
-    });
+    next(error);
   }
 };
 
-const getSingleTour = async (req: Request, res: Response) => {
+const getAllTours = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = req.params.id;
-    const result = await tourServices.getSingleTour(id);
-    res.status(200).json({
-      success: true,
-      message: "Tour retrieved successfully!",
+    const result = await tourServices.getAllTours();
+    sendSuccessResponse(res, {
+      message: "Tours retrieved successfully!",
+      statusCode: 200,
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: error,
-    });
+    next(error);
   }
 };
-const updateTour = async (req: Request, res: Response) => {
+
+const getSingleTour = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const result = await tourServices.getSingleTour(id);
+    sendSuccessResponse(res, {
+      message: "Tour retrieved successfully!",
+      statusCode: 201,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateTour = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id;
     const tourData = req.body;
     const result = await tourServices.updateTour(id, tourData);
-    res.status(200).json({
-      success: true,
+    sendSuccessResponse(res, {
       message: "Tour updated successfully!",
+      statusCode: 201,
       data: result,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: error,
-    });
+    next(error);
   }
 };
-const deleteTour = async (req: Request, res: Response) => {
+
+const deleteTour = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = req.params.id;
     await tourServices.deleteTour(id);
-    res.status(200).json({
-      success: true,
+    sendSuccessResponse(res, {
       message: "Tour deleted successfully!",
+      statusCode: 201,
+      data: null,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: error,
-    });
+    next(error);
   }
 };
-const getNextSchedule = async (req: Request, res: Response) => {
+
+const getNextSchedule = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = req.params.id;
     const tour = await tourServices.getNextSchedule(id);
-    res.status(200).json({
-      success: true,
-      message: "Nearest schedule fetched successfully!",
+    sendSuccessResponse(res, {
+      message: "Tour schedule retrieved successfully!",
+      statusCode: 201,
       data: tour,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong!",
-      error: error,
-    });
+    next(error);
   }
 };
 
