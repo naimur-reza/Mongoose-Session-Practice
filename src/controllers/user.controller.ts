@@ -1,13 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextFunction, Request, RequestHandler, Response } from "express";
+import { Request, Response } from "express";
 import { userServices } from "../services/user.service";
 import { sendSuccessResponse } from "../utils/sendSuccessResponse";
-
-const catchAsyncFunction = (fn: RequestHandler) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch(error => next(error));
-  };
-};
+import { catchAsyncFunction } from "../utils/catchAsyncFunction";
 
 const createUser = catchAsyncFunction(async (req: Request, res: Response) => {
   const userData = req.body;
