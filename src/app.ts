@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import { userRouter } from "./routes/user.route";
 import { tourRouter } from "./routes/tour.route";
+import { notFound } from "./controllers/notFound.controller";
 
 export const app: Application = express();
 app.use(cors());
@@ -18,9 +19,4 @@ app.get("/", (req: Request, res: Response) => {
 
 // catch all routes
 // One way for catch not found route!
-app.all("*", (req: Request, res: Response) => {
-  res.status(404).json({
-    statusCode: 404,
-    message: `Route not found for ${req.originalUrl}!`,
-  });
-});
+app.all("*", notFound);
