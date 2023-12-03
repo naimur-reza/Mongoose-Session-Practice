@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IBooking } from "../interfaces/booking.interface";
+import { TourModel } from "./tour.model";
 
 const bookingSchema = new Schema<IBooking>({
   user: {
@@ -22,8 +23,17 @@ const bookingSchema = new Schema<IBooking>({
 
   price: {
     type: Number,
-    required: [true, "A booking must have a price"],
   },
+});
+
+bookingSchema.pre("save", async function (next) {
+  const tour = await TourModel.findOne({ _id: this.tour });
+
+  if (!tour) throw new Error("Tour not found!");
+
+  this.price = tour.price * this.bookedSlots;
+
+  next();
 });
 
 const Booking = model<IBooking>("Booking", bookingSchema);

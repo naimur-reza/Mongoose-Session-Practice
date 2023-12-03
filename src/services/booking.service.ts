@@ -14,7 +14,7 @@ const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
 
     if (!result) throw new Error("Booking failed!");
 
-    const tour = await TourModel.findOneAndUpdate(
+    const updateTour = await TourModel.findOneAndUpdate(
       result[0].tour,
       {
         $inc: { availableSeats: -result[0].bookedSlots },
@@ -22,7 +22,7 @@ const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
       { session },
     );
 
-    if (!tour) throw new Error("Tour update failed!");
+    if (!updateTour) throw new Error("Tour update failed!");
 
     await session.commitTransaction();
     session.endSession();
