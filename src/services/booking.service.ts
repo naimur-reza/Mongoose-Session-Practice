@@ -1,17 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import mongoose from "mongoose";
 import { IBooking } from "../interfaces/booking.interface";
 import Booking from "../models/booking.model";
 import { TourModel } from "../models/tour.model";
 
 const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
-  const result = await Booking.create(bookingData);
+  const session = await mongoose.startSession();
 
-  if (!result) throw new Error("Booking could'nt be created!");
+  try {
+    session.startTransaction();
 
-  await TourModel.findOneAndUpdate(result.tour, {
-    $inc: { availableSeats: -result.bookedSlots },
-  });
+    const result = await Booking.create([bookingData], { session });
 
-  return result;
+    if (!result) throw new Error("Booking failed!");
+
+    const tour = await TourModel.findOneAndUpdate(
+      result[0].tour,
+      {
+        $inc: { availableSeats: -result[0].bookedSlots },
+      },
+      { session },
+    );
+
+    if (!tour) throw new Error("Tour update failed!");
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return result[0];
+  } catch (error: any) {
+    await session.abortTransaction();
+    session.endSession();
+    throw new Error(error);
+  }
 };
 
 const getAllBookings = async (): Promise<IBooking[]> => {
