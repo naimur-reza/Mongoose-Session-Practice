@@ -1,8 +1,16 @@
 import { IBooking } from "../interfaces/booking.interface";
 import Booking from "../models/booking.model";
+import { TourModel } from "../models/tour.model";
 
 const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
   const result = await Booking.create(bookingData);
+
+  if (!result) throw new Error("Booking could'nt be created!");
+
+  await TourModel.findOneAndUpdate(result.tour, {
+    $inc: { availableSeats: -result.bookedSlots },
+  });
+
   return result;
 };
 
