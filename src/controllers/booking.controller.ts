@@ -80,7 +80,7 @@ export const BookingController = {
   createBooking,
   getAllBooking,
   getSingleBooking,
-  getAllBookingsOfUser
+  getAllBookingsOfUser,
   updateBooking,
   deleteBooking,
 };

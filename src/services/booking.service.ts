@@ -7,12 +7,12 @@ const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
 };
 
 const getAllBookings = async (): Promise<IBooking[]> => {
-  const result = await Booking.find();
+  const result = await Booking.find().populate("user").populate("tour");
   return result;
 };
 
 const getAllBookingsOfUser = async (id: string): Promise<IBooking[]> => {
-  const result = await Booking.find({ _id: id });
+  const result = await Booking.find({ user: id });
   return result;
 };
 
