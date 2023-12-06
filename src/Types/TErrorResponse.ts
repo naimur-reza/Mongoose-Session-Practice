@@ -1,7 +1,8 @@
 interface TErrorResponse {
-  success: boolean;
+  status: string;
   statusCode: number;
-  error: TErrorIssue[];
+  message: string;
+  issues: TErrorIssue[];
 }
 
 interface TErrorIssue {

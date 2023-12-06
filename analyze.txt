@@ -1,0 +1,5 @@
+mongoose validation flow
+
+first - Field validation
+second - indexing (if the data is unique or not)
+third - Data type validation
