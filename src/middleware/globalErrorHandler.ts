@@ -3,7 +3,8 @@
 /* eslint-disable no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
-import TErrorResponse from "../types/TErrorResponse";
+import { TErrorResponse } from "../types/TErrorResponse";
+import handleValidationError from "../errorHelpers/handlerValidationError";
 
 // global error handler
 export const globalErrorHandler = (
@@ -12,28 +13,15 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  const errorResponse: TErrorResponse = {
+  let errorResponse: TErrorResponse = {
     statusCode: err.statusCode || 500,
     status: err.status || "failed",
     message: "Something went wrong",
     issues: err.issues || [],
   };
 
-  if (err instanceof mongoose.Error.ValidationError) {
-    errorResponse.statusCode = 400;
-    errorResponse.status = "error";
-    errorResponse.message = err.message;
-    const errorValues = Object.values(err.errors);
-
-    errorValues.forEach(
-      (errObj: mongoose.Error.ValidatorError | mongoose.Error.CastError) => {
-        errorResponse.issues.push({
-          path: errObj.path,
-          message: errObj.message,
-        });
-      },
-    );
-  }
+  if (err instanceof mongoose.Error.ValidationError)
+    errorResponse = handleValidationError(err);
 
   res.status(errorResponse.statusCode).json({
     status: errorResponse.status,
