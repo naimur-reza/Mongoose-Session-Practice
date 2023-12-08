@@ -2,10 +2,10 @@ export interface TErrorResponse {
   status: string;
   statusCode: number;
   message: string;
-  issues: TErrorIssue[];
+  issues: TErrorIssue;
 }
 
-export interface TErrorIssue {
+export type TErrorIssue = {
   path: string;
   message: string;
-}
+}[];

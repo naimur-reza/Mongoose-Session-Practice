@@ -5,7 +5,7 @@ import { TErrorIssue, TErrorResponse } from "../types/TErrorResponse";
 const handleValidationError = (
   err: mongoose.Error.ValidationError,
 ): TErrorResponse => {
-  const issues: TErrorIssue[] = [];
+  const issues: TErrorIssue = [];
   const errorValues = Object.values(err.errors);
 
   errorValues.forEach(errObj => {

@@ -2,9 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars */
 import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import { TErrorResponse } from "../types/TErrorResponse";
 import handleValidationError from "../errorHelpers/handlerValidationError";
+import handleDuplicateError from "../errorHelpers/handleDuplicateError";
+import handleCastError from "../errorHelpers/handleCastError";
 
 // global error handler
 export const globalErrorHandler = (
@@ -22,19 +24,10 @@ export const globalErrorHandler = (
 
   if (err instanceof mongoose.Error.ValidationError)
     errorResponse = handleValidationError(err);
-  else if (err.code && err.code === 11000) {
-    errorResponse.statusCode = 409;
-    errorResponse.status = "error";
-    const regex = /"(.*?)"/;
-    const matches = err.message.match(regex);
-    errorResponse.message = "Duplicate error";
-    errorResponse.issues = [
-      {
-        path: "",
-        message: `Duplicate key error, ${matches![1]}`,
-      },
-    ];
-  }
+  else if (err.code && err.code === 11000)
+    errorResponse = handleDuplicateError(err);
+  else if (err instanceof mongoose.Error.CastError)
+    errorResponse = handleCastError(err);
 
   res.status(errorResponse.statusCode).json({
     status: errorResponse.status,
