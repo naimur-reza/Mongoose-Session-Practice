@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { IBooking } from "../interfaces/booking.interface";
 import { TourModel } from "./tour.model";
+import GenericError from "../errorClasses/GenericError";
 
 const bookingSchema = new Schema<IBooking>({
   user: {
@@ -29,7 +30,7 @@ const bookingSchema = new Schema<IBooking>({
 bookingSchema.pre("save", async function (next) {
   const tour = await TourModel.findOne({ _id: this.tour });
 
-  if (!tour) throw new Error("Tour not found!");
+  if (!tour) throw new GenericError("Tour not found!", 400);
 
   this.price = tour.price * this.bookedSlots;
 

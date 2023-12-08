@@ -7,6 +7,10 @@ import { TErrorResponse } from "../types/TErrorResponse";
 import handleValidationError from "../errorHelpers/handlerValidationError";
 import handleDuplicateError from "../errorHelpers/handleDuplicateError";
 import handleCastError from "../errorHelpers/handleCastError";
+import config from "../config";
+import handleGenericError from "../errorHelpers/handleGenericError";
+import GenericError from "../errorClasses/GenericError";
+import errorPreprocessor from "../errorHelpers/errorPreprocessor";
 
 // global error handler
 export const globalErrorHandler = (
@@ -22,18 +26,14 @@ export const globalErrorHandler = (
     issues: err.issues || [],
   };
 
-  if (err instanceof mongoose.Error.ValidationError)
-    errorResponse = handleValidationError(err);
-  else if (err.code && err.code === 11000)
-    errorResponse = handleDuplicateError(err);
-  else if (err instanceof mongoose.Error.CastError)
-    errorResponse = handleCastError(err);
+  errorResponse = errorPreprocessor(err);
 
   res.status(errorResponse.statusCode).json({
     status: errorResponse.status,
     statusCode: errorResponse.statusCode,
     message: errorResponse.message,
     issues: errorResponse.issues,
+    stack: config.node_env === "development" ? err.stack : null,
     err,
   });
 };

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { IBooking } from "../interfaces/booking.interface";
 import Booking from "../models/booking.model";
 import { TourModel } from "../models/tour.model";
+import GenericError from "../errorClasses/GenericError";
 
 const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
   const session = await mongoose.startSession();
@@ -12,7 +13,7 @@ const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
 
     const result = await Booking.create([bookingData], { session });
 
-    if (!result) throw new Error("Booking failed!");
+    if (!result) throw new GenericError("Booking failed!", 400);
 
     const updateTour = await TourModel.findOneAndUpdate(
       result[0].tour,
@@ -22,7 +23,7 @@ const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
       { session },
     );
 
-    if (!updateTour) throw new Error("Tour update failed!");
+    if (!updateTour) throw new GenericError("Tour update failed!", 400);
 
     await session.commitTransaction();
     session.endSession();
@@ -31,7 +32,7 @@ const createBooking = async (bookingData: IBooking): Promise<IBooking> => {
   } catch (error: any) {
     await session.abortTransaction();
     session.endSession();
-    throw new Error(error);
+    throw new GenericError(error, 400);
   }
 };
 
