@@ -2,8 +2,11 @@ import { Request, Response } from "express";
 import { tourServices } from "../services/tour.service";
 import { sendSuccessResponse } from "../utils/sendSuccessResponse";
 import { catchAsyncFunction } from "../utils/catchAsyncFunction";
+import validateRequest from "../utils/validateRequest";
+import { createTourZodSchema } from "../validations/tour.validation";
 
 const createTour = catchAsyncFunction(async (req: Request, res: Response) => {
+  validateRequest(createTourZodSchema);
   const tourData = req.body;
   const result = await tourServices.createTour(tourData);
   sendSuccessResponse(res, {

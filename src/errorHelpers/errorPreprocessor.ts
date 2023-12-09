@@ -5,9 +5,12 @@ import handleCastError from "./handleCastError";
 import handleDuplicateError from "./handleDuplicateError";
 import handleGenericError from "./handleGenericError";
 import handleValidationError from "./handlerValidationError";
+import { ZodError } from "zod";
+import handleZodError from "./handleZodError";
 
 const errorPreprocessor = (err: any) => {
-  if (err instanceof mongoose.Error.ValidationError)
+  if (err instanceof ZodError) return handleZodError(err);
+  else if (err instanceof mongoose.Error.ValidationError)
     return handleValidationError(err);
   else if (err.code && err.code === 11000) return handleDuplicateError(err);
   else if (err instanceof mongoose.Error.CastError) return handleCastError(err);
