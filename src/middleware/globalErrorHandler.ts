@@ -7,7 +7,7 @@ import { TErrorResponse } from "../types/TErrorResponse";
 
 import config from "../config";
 
-import errorPreprocessor from "../errorHelpers/errorPreprocessor";
+import errorPreprocessor from "../helpers/errorHelpers/errorPreprocessor";
 
 // global error handler
 export const globalErrorHandler = (

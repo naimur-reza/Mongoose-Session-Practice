@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose";
-import GenericError from "../errorClasses/GenericError";
+import GenericError from "../../errorClasses/GenericError";
 import handleCastError from "./handleCastError";
 import handleDuplicateError from "./handleDuplicateError";
 import handleGenericError from "./handleGenericError";

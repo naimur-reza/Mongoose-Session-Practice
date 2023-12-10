@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { TErrorIssue, TErrorResponse } from "../types/TErrorResponse";
+import { TErrorIssue, TErrorResponse } from "../../types/TErrorResponse";
 import { ZodError } from "zod";
 const handleZodError = (err: ZodError): TErrorResponse => {
   const issues: TErrorIssue = err.issues.map(error => ({

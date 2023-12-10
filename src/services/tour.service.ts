@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ITour } from "../interfaces/tour.interface";
 import { TourModel } from "../models/tour.model";
+import { filter } from "../helpers/filterHelper";
 
 const createTour = async (tourData: ITour): Promise<ITour> => {
   const result = await TourModel.create(tourData);
   return result;
 };
 
-const getAllTours = async (): Promise<ITour[]> => {
-  const result = await TourModel.find();
+const getAllTours = async (query: any): Promise<ITour[]> => {
+  const result = await filter(TourModel.find(), query);
   return result;
 };
 

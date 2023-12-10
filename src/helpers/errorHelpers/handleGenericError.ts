@@ -1,5 +1,5 @@
-import { TErrorIssue, TErrorResponse } from "../types/TErrorResponse";
-import GenericError from "../errorClasses/GenericError";
+import { TErrorIssue, TErrorResponse } from "../../types/TErrorResponse";
+import GenericError from "../../errorClasses/GenericError";
 
 const handleGenericError = (err: GenericError): TErrorResponse => {
   const issues: TErrorIssue = [
