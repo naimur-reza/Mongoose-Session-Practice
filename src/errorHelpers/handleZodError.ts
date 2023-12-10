@@ -2,7 +2,6 @@
 
 import { TErrorIssue, TErrorResponse } from "../types/TErrorResponse";
 import { ZodError } from "zod";
-
 const handleZodError = (err: ZodError): TErrorResponse => {
   const issues: TErrorIssue = err.issues.map(error => ({
     path: error.path[error.path.length - 1],

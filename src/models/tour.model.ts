@@ -36,11 +36,6 @@ const tourSchema = new Schema<ITour, TTourModel, ITourMethods>(
       type: [String],
       required: [true, "Images are required"],
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      required: [true, "CreatedAt is required"],
-    },
     startDates: {
       type: [Date],
       required: [true, "Start dates are required"],
@@ -57,10 +52,12 @@ const tourSchema = new Schema<ITour, TTourModel, ITourMethods>(
       type: String,
       required: [true, "Slug is required"],
     },
+    discountPrice: { type: Number },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   },
 );
 
