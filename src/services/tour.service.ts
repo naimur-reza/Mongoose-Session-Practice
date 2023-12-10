@@ -3,13 +3,20 @@ import { ITour } from "../interfaces/tour.interface";
 import { TourModel } from "../models/tour.model";
 import { filter } from "../helpers/filterHelper";
 
+import { TQueryObj } from "../types/TQuery";
+
 const createTour = async (tourData: ITour): Promise<ITour> => {
   const result = await TourModel.create(tourData);
   return result;
 };
 
-const getAllTours = async (query: any): Promise<ITour[]> => {
-  const result = await filter(TourModel.find(), query);
+const getAllTours = async (query: TQueryObj): Promise<ITour[]> => {
+  const modelQuery = filter(TourModel.find(), query);
+  console.log(query);
+  if (query.searchTerm)
+    // { <field>: { $regex: /pattern/, $options: '<options>' } }
+    modelQuery.find({ name: { $regex: query.searchTerm, $options: "i" } });
+  const result = await modelQuery;
   return result;
 };
 
