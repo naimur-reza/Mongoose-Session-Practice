@@ -16,6 +16,15 @@ const getAllTours = async (query: TQueryObj): Promise<ITour[]> => {
   const searchQuery = search(modelQuery, query);
   const sortQuery = sort(searchQuery, query);
 
+  if (query.page && query.limit) {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
+    const skip = (page - 1) * limit;
+    sortQuery.skip(skip).limit(limit);
+  } else {
+    sortQuery.skip(0).limit(10);
+  }
+
   const result = await sortQuery;
   return result;
 };
