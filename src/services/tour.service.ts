@@ -4,6 +4,7 @@ import { TourModel } from "../models/tour.model";
 import { filter } from "../helpers/filterHelper";
 import { TQueryObj } from "../types/TQuery";
 import search from "../helpers/searchHelper";
+import { sort } from "../helpers/sortHelper";
 
 const createTour = async (tourData: ITour): Promise<ITour> => {
   const result = await TourModel.create(tourData);
@@ -13,7 +14,9 @@ const createTour = async (tourData: ITour): Promise<ITour> => {
 const getAllTours = async (query: TQueryObj): Promise<ITour[]> => {
   const modelQuery = filter(TourModel.find(), query);
   const searchQuery = search(modelQuery, query);
-  const result = await searchQuery;
+  const sortQuery = sort(searchQuery, query);
+
+  const result = await sortQuery;
   return result;
 };
 
