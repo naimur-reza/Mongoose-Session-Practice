@@ -5,6 +5,7 @@ import { filter } from "../helpers/filterHelper";
 import { TQueryObj } from "../types/TQuery";
 import search from "../helpers/searchHelper";
 import { sort } from "../helpers/sortHelper";
+import { paginate } from "../helpers/paginateHelper";
 
 const createTour = async (tourData: ITour): Promise<ITour> => {
   const result = await TourModel.create(tourData);
@@ -15,17 +16,9 @@ const getAllTours = async (query: TQueryObj): Promise<ITour[]> => {
   const modelQuery = filter(TourModel.find(), query);
   const searchQuery = search(modelQuery, query);
   const sortQuery = sort(searchQuery, query);
+  const paginateQuery = paginate(sortQuery, query);
 
-  if (query.page && query.limit) {
-    const page = Number(query.page) || 1;
-    const limit = Number(query.limit) || 10;
-    const skip = (page - 1) * limit;
-    sortQuery.skip(skip).limit(limit);
-  } else {
-    sortQuery.skip(0).limit(10);
-  }
-
-  const result = await sortQuery;
+  const result = await paginateQuery;
   return result;
 };
 
