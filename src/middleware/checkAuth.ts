@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncFunction } from "../utils/catchAsyncFunction";
 import { User } from "../models/user.model";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import GenericError from "../errorClasses/GenericError";
 import { USER_ROLE } from "../constants/user.constants";
 import config from "../config";
+import { verifyToken } from "../helpers/jwtHelper";
 const checkAuth = (...roles: Array<keyof typeof USER_ROLE>) => {
   return catchAsyncFunction(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -18,8 +18,7 @@ const checkAuth = (...roles: Array<keyof typeof USER_ROLE>) => {
           401,
         );
 
-      const decoded = jwt.verify(token, config.jwt_access_secret) as JwtPayload;
-      console.log(decoded);
+      const decoded = verifyToken(token, config.jwt_access_secret);
 
       const { email } = decoded;
 
