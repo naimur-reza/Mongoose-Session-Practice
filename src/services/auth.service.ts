@@ -1,14 +1,14 @@
 import config from "../config";
 import { ILogin, IRegister } from "../interfaces/auth.interface";
 import { User } from "../models/user.model";
-import bcrypt from "bcrypt";
 import { createToken } from "../helpers/jwtHelper";
+import { comparePassword, hashedPassword } from "../helpers/passwordHelper";
 const register = async (payload: IRegister) => {
-  const hashedPassword = bcrypt.hashSync(payload.password, 10);
+  const makeHashed = hashedPassword(payload.password);
 
   const user = await User.create({
     ...payload,
-    password: hashedPassword,
+    password: makeHashed,
   });
 
   return user;
@@ -23,7 +23,7 @@ const login = async (payload: ILogin) => {
 
   console.log(user);
 
-  const isMatch = bcrypt.compareSync(payload.password, user.password);
+  const isMatch = comparePassword(payload.password, user.password);
   if (!isMatch) throw new Error("Password not matched");
 
   const jwtPayload = {
