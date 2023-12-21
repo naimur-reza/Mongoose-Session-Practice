@@ -18,7 +18,7 @@ const register = catchAsyncFunction(async (req: Request, res: Response) => {
 const login = catchAsyncFunction(async (req, res) => {
   console.log("login service is running");
 
-  const user = await AuthServices.login(req.body);
+  const user = await AuthServices.login(req.body.data);
   sendSuccessResponse(res, {
     message: "User logged in successfully!",
     statusCode: 200,
