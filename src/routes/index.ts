@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { routes } from "../constants/routes";
+import { routes } from "../constants/routes.constants";
 
 const globalRouter = Router();
 
