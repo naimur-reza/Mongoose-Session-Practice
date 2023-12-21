@@ -20,6 +20,8 @@ const checkAuth = (...roles: Array<keyof typeof USER_ROLE>) => {
 
       const decoded = verifyToken(token, config.jwt_access_secret);
 
+      req.user = decoded;
+
       const { email } = decoded;
 
       const user = await User.findOne({ email });
