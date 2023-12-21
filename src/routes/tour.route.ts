@@ -1,10 +1,11 @@
 import express from "express";
 const router = express.Router();
 import { TourController } from "../controllers/tour.controller";
-import { validateRequest } from "../middleware/validateRequest";
-import { createTourZodSchema } from "../validations/tour.validation";
+import checkAuth from "../middleware/checkAuth";
+// import { validateRequest } from "../middleware/validateRequest";
+// import { createTourZodSchema } from "../validations/tour.validation";
 
-router.get("/", TourController.getAllTours);
+router.get("/", checkAuth, TourController.getAllTours);
 router.post(
   "/create-tour",
   //   validateRequest(createTourZodSchema),

@@ -11,7 +11,11 @@ const userSchema = new Schema<IUser>({
     unique: true,
     lowercase: true,
   },
-  password: { type: String, required: [true, "Password is required"] },
+  password: {
+    type: String,
+    required: [true, "Password is required"],
+    select: 0,
+  },
   passwordChangedAt: { type: String, default: null },
   photoURL: { type: String, required: [true, "Photo URL is required"] },
   role: {
