@@ -1,4 +1,4 @@
-export interface IAuth {
-  email: string;
-  password: string;
-}
+import { IUser } from "./user.interface";
+
+export interface IRegister
+  extends Omit<IUser, "role" | "userStatus" | "passwordChangedAt"> {}
