@@ -1,17 +1,29 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncFunction } from "../utils/catchAsyncFunction";
 import { User } from "../models/user.model";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import GenericError from "../errorClasses/GenericError";
 import { USER_ROLE } from "../constants/user.constants";
+import config from "../config";
 const checkAuth = (...roles: Array<keyof typeof USER_ROLE>) => {
   return catchAsyncFunction(
     async (req: Request, res: Response, next: NextFunction) => {
       console.log("checkAuth middleware is running");
 
-      const email = req.body.email;
-      const password = req.body.password;
+      const token = req.headers.authorization;
 
-      const user = await User.findOne({ email, password });
+      if (!token)
+        throw new GenericError(
+          "You are not authorized to access this route",
+          401,
+        );
+
+      const decoded = jwt.verify(token, config.jwt_access_secret) as JwtPayload;
+      console.log(decoded);
+
+      const { email } = decoded;
+
+      const user = await User.findOne({ email });
 
       if (!user) throw new GenericError("Invalid email or password", 404);
 
