@@ -54,7 +54,10 @@ const changePassword = async (
   const isMatch = comparePassword(payload.oldPassword, user.password);
   if (!isMatch) throw new GenericError("Password not matched", 400);
 
-  if (user.passwordChangedAt && (iat as number) > new Date().getTime() / 1000)
+  if (
+    user.passwordChangedAt &&
+    (iat as number) < new Date(user.passwordChangedAt).getTime() / 1000
+  )
     throw new GenericError("Old Token", 400);
 
   const newHashedPassword = hashedPassword(payload.newPassword);
