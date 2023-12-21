@@ -18,5 +18,6 @@ router.post(
   checkAuth("admin", "user"),
   AuthControllers.changePassword,
 );
+router.post("/refresh-token", AuthControllers.refreshToken);
 
 export const AuthRouter = router;

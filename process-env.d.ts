@@ -6,5 +6,7 @@ declare namespace NodeJS {
     NODE_ENV: string;
     JWT_ACCESS_SECRET: string;
     JWT_ACCESS_EXPIRES_IN: string;
+    JWT_REFRESH_SECRET: string;
+    JWT_REFRESH_EXPIRES_IN: string;
   };
 }

@@ -1,7 +1,7 @@
 import config from "../config";
 import { ILogin, IRegister } from "../interfaces/auth.interface";
 import { User } from "../models/user.model";
-import { createToken } from "../helpers/jwtHelper";
+import { createToken, verifyToken } from "../helpers/jwtHelper";
 import { comparePassword, hashedPassword } from "../helpers/passwordHelper";
 import { JwtPayload } from "jsonwebtoken";
 import GenericError from "../errorClasses/GenericError";
@@ -32,10 +32,15 @@ const login = async (payload: ILogin) => {
     email: user.email,
     role: user.role,
   };
-  const token = createToken(jwtPayload, config.jwt_access_secret, {
+  const accessToken = createToken(jwtPayload, config.jwt_access_secret, {
     expiresIn: config.jwt_access_expires_in,
   });
-  return token;
+
+  const refreshToken = createToken(jwtPayload, config.jwt_refresh_secret, {
+    expiresIn: config.jwt_refresh_expires_in,
+  });
+
+  return { accessToken, refreshToken };
 };
 
 const changePassword = async (
@@ -76,8 +81,32 @@ const changePassword = async (
   return updateUser;
 };
 
+const refreshToken = async (refreshToken: string) => {
+  if (!refreshToken) throw new GenericError("Invalid token!", 400);
+
+  const decoded = verifyToken(refreshToken, config.jwt_refresh_secret);
+
+  const { email } = decoded as JwtPayload;
+
+  const user = await User.findOne({ email });
+
+  if (!user) throw new GenericError("Invalid token!", 400);
+
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = createToken(jwtPayload, config.jwt_access_secret, {
+    expiresIn: config.jwt_access_expires_in,
+  });
+
+  return accessToken;
+};
+
 export const AuthServices = {
   register,
   login,
   changePassword,
+  refreshToken,
 };
